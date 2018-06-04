@@ -31,7 +31,7 @@ Clone the repository and install the required npm dependencies:
 
 ```
 $ git clone git@github.com:0xcert/ethereum-zxc.git
-$ cd ethereum-xcert
+$ cd ethereum-zxc
 $ npm install
 ```
 
