@@ -55,5 +55,8 @@
   "devDependencies": {
     "truffle": "^4.1.11",
     "truffle-flattener": "^1.2.5"
+  },
+  "dependencies": {
+    "@0xcert/ethereum-utils": "1.0.0"
   }
 }
