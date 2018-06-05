@@ -3,16 +3,21 @@ const assertRevert = require('../../node_modules/@0xcert/ethereum-utils/test/hel
 
 contract('erc/Zxc', (accounts) => {
   let token;
-  let owner = accounts[0];
-  let totalSupply = new web3.BigNumber('4e+26');
+  const owner = accounts[0];
+  const tokenTotalSupply = new web3.BigNumber('4e+26');
+  const tokenName = "0xcert Protocol Token";
+  const tokenSymbol  = "ZXC";
+  const tokenDecimals = "18";
+  const ownerSupply = new web3.BigNumber('4e+26');
 
   beforeEach(async () => {
     token = await Zxc.new();
   });
 
-  it('has correct totalSupply after construction', async () => {
-    let actualSupply = await token.totalSupply();
-    assert.equal(actualSupply.toString(), totalSupply.toString());
+  it('has correct tokenSupply after construction', async () => {
+    const actualSupply = await token.totalSupply();
+    assert.equal(actualSupply.toString(), tokenTotalSupply.toString());
+  });
 
   it('has correct token name after construction', async () => {
     const actualName = await token.name();
@@ -37,16 +42,16 @@ contract('erc/Zxc', (accounts) => {
   it('returns correct balances after transfer', async () => {
     await token.enableTransfer();
     await token.transfer(accounts[1], 100);
-    let firstAccountBalance = await token.balanceOf(owner);
-    let secondAccountBalance = await token.balanceOf(accounts[1]);
-    assert.equal(firstAccountBalance.toString(), totalSupply.minus(100).toString());
+    const firstAccountBalance = await token.balanceOf(owner);
+    const secondAccountBalance = await token.balanceOf(accounts[1]);
+    assert.equal(firstAccountBalance.toString(), tokenTotalSupply.minus(100).toString());
     assert.equal(secondAccountBalance, 100);
   });
 
   it('emits Transfer event on transfer', async () => {
     await token.enableTransfer();
-    let { logs } = await token.transfer(accounts[1], 100);
-    let event = logs.find(e => e.event === 'Transfer');
+    const { logs } = await token.transfer(accounts[1], 100);
+    const event = logs.find(e => e.event === 'Transfer');
     assert.notEqual(event, undefined);
   });
 
@@ -55,7 +60,7 @@ contract('erc/Zxc', (accounts) => {
   });
 
   it('throws when trying to transfer more than available balance', async () => {
-    let moreThanBalance = totalSupply.plus(1);
+    const moreThanBalance = tokenTotalSupply.plus(1);
     await token.enableTransfer();
     await assertRevert(token.transfer(accounts[1], moreThanBalance));
   });
@@ -72,13 +77,13 @@ contract('erc/Zxc', (accounts) => {
 
   it('returns the correct allowance amount after approval', async () => {
     await token.approve(accounts[1], 100);
-    let allowance = await token.allowance(owner, accounts[1]);
+    const allowance = await token.allowance(owner, accounts[1]);
     assert.equal(allowance, 100);
   });
 
   it('emits Approval event after approval', async () => {
-    let { logs } = await token.approve(accounts[1], 100);
-    let event = logs.find(e => e.event === 'Approval');
+    const { logs } = await token.approve(accounts[1], 100);
+    const event = logs.find(e => e.event === 'Approval');
     assert.notEqual(event, undefined);
   });
 
@@ -86,10 +91,10 @@ contract('erc/Zxc', (accounts) => {
     await token.enableTransfer();
     await token.approve(accounts[1], 100);
     await token.transferFrom(owner, accounts[2], 100, { from: accounts[1] });
-    let balance0 = await token.balanceOf(owner);
-    let balance1 = await token.balanceOf(accounts[2]);
-    let balance2 = await token.balanceOf(accounts[1]);
-    assert.equal(balance0.toString(), totalSupply.minus(100).toString());
+    const balance0 = await token.balanceOf(owner);
+    const balance1 = await token.balanceOf(accounts[2]);
+    const balance2 = await token.balanceOf(accounts[1]);
+    assert.equal(balance0.toString(), tokenTotalSupply.minus(100).toString());
     assert.equal(balance1, 100);
     assert.equal(balance2, 0);
   });
@@ -97,12 +102,12 @@ contract('erc/Zxc', (accounts) => {
   it('emits Transfer event on transferFrom', async () => {
     await token.enableTransfer();
     await token.approve(accounts[1], 100);
-    let { logs } = await token.transferFrom(owner, accounts[2], 100, { from: accounts[1] });
-    let event = logs.find(e => e.event === 'Transfer');
+    const { logs } = await token.transferFrom(owner, accounts[2], 100, { from: accounts[1] });
+    const event = logs.find(e => e.event === 'Transfer');
     assert.notEqual(event, undefined);
   });
 
-  it('throws when trying to transfer more than allowed amount', async () => {
+  it('throws when trying to transferFrom more than allowed amount', async () => {
     await token.enableTransfer();
     await token.approve(accounts[1], 99);
     await assertRevert(token.transferFrom(owner, accounts[2], 100, { from: accounts[1] }));
@@ -110,23 +115,23 @@ contract('erc/Zxc', (accounts) => {
 
   it('throws an error when trying to transferFrom more than _from has', async () => {
     await token.enableTransfer();
-    let balance0 = await token.balanceOf(owner);
-    await token.approve(accounts[1], 99);
-    await assertRevert(token.transferFrom(owner, accounts[2], balance0.toNumber() + 1, { from: accounts[1] }));
+    await token.approve(accounts[1], ownerSupply.plus(1));
+    await assertRevert(token.transferFrom(owner, accounts[2], ownerSupply.plus(1),
+      { from: accounts[1]}));
   });
 
   it('returns 0 allowance by default', async () => {
-    let preApproved = await token.allowance(owner, accounts[1]);
+    const preApproved = await token.allowance(owner, accounts[1]);
     assert.equal(preApproved, 0);
   });
 
   it('increases and decreases allowance after approval', async () => {
     await token.approve(accounts[1], 50);
-    let postIncrease = await token.allowance(owner, accounts[1]);
+    const postIncrease = await token.allowance(owner, accounts[1]);
     assert.equal(postIncrease.toString(), '50');
     await token.approve(accounts[1], 0);
     await token.approve(accounts[1], 40);
-    let postDecrease = await token.allowance(owner, accounts[1]);
+    const postDecrease = await token.allowance(owner, accounts[1]);
     assert.equal(postIncrease.minus(10).toString(), postDecrease.toString());
   });
 
@@ -154,15 +159,16 @@ contract('erc/Zxc', (accounts) => {
 
   it('allows token burning by the owner', async () => {
     await token.enableTransfer();
-    let { logs } = await token.burn(1, {from: owner});
+    const totalSupplyPrior = await token.totalSupply();
+    const { logs } = await token.burn(1, {from: owner});
 
-    let balance = await token.balanceOf(owner);
-    assert.equal(balance.toString(), totalSupply.minus(1).toString());
+    const totalSupplyAfter = await token.totalSupply();
+    const balance = await token.balanceOf(owner);
+    assert.equal(balance.toString(), totalSupplyAfter);
 
-    let actualSupply = await token.totalSupply();
-    assert.equal(actualSupply.toString(), totalSupply.minus(1).toString());
+    assert.equal(totalSupplyAfter.toString(), totalSupplyPrior.minus(1).toString());
 
-    let event = logs.find(e => e.event === 'Burn');
+    const event = logs.find(e => e.event === 'Burn');
     assert.notEqual(event, undefined);
   });
 
@@ -171,7 +177,7 @@ contract('erc/Zxc', (accounts) => {
   });
 
   it('does not allow owner to burn more than available balance', async () => {
-    await assertRevert(token.burn(totalSupply.plus(1), { from: owner }));
+    await assertRevert(token.burn(tokenTotalSupply.plus(1), { from: owner }));
   });
 
 });
