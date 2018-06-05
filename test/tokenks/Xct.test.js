@@ -13,6 +13,25 @@ contract('erc/Zxc', (accounts) => {
   it('has correct totalSupply after construction', async () => {
     let actualSupply = await token.totalSupply();
     assert.equal(actualSupply.toString(), totalSupply.toString());
+
+  it('has correct token name after construction', async () => {
+    const actualName = await token.name();
+    assert.equal(actualName, tokenName);
+  });
+
+  it('has correct token symbol after construction', async () => {
+    const actualSymbol = await token.symbol();
+    assert.equal(actualSymbol, tokenSymbol);
+  });
+
+  it('has correct token decimals after construction', async () => {
+    const actualDecimals = await token.decimals();
+    assert.equal(actualDecimals.toString(), tokenDecimals);
+  });
+
+  it('has correct owner token balance after construction', async () => {
+    const actualBalance = await token.balanceOf(owner);
+    assert.equal(actualBalance.toString(), ownerSupply.toString());
   });
 
   it('returns correct balances after transfer', async () => {
