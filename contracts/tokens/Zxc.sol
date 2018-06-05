@@ -52,7 +52,11 @@ contract Zxc is Ownable {
    * @param _to The address recieving tokens.
    * @param _value The amount of transferred tokens.
    */
-  event Transfer(address indexed _from, address indexed _to, uint256 _value);
+  event Transfer(
+    address indexed _from,
+    address indexed _to,
+    uint256 _value
+  );
 
   /**
    * @dev An event which is triggered when an address to spend the specified amount of
@@ -61,14 +65,21 @@ contract Zxc is Ownable {
    * @param _spender The address which spent the funds.
    * @param _value The amount of spent tokens.
    */
-  event Approval(address indexed _owner, address indexed _spender, uint256 _value);
+  event Approval(
+    address indexed _owner,
+    address indexed _spender,
+    uint256 _value
+  );
 
   /**
    * @dev An event which is triggered when tokens are burned.
    * @param _burner The address which burns tokens.
    * @param _value The amount of burned tokens.
    */
-  event Burn(address indexed _burner, uint256 _value);
+  event Burn(
+    address indexed _burner,
+    uint256 _value
+  );
 
   /**
    * @dev Assures that the provided address is a valid destination to transfer tokens to.
