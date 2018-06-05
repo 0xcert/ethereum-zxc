@@ -31,7 +31,7 @@ Clone the repository and install the required npm dependencies:
 
 ```
 $ git clone git@github.com:0xcert/ethereum-zxc.git
-$ cd ethereum-xcert
+$ cd ethereum-zxc
 $ npm install
 ```
 
@@ -42,31 +42,6 @@ $ npm run test
 ```
 
 All tests should pass.
-
-## Usage
-
-### NPM
-
-To interact with package's contracts within JavaScript code, you simply need to require that package's .json files:
-
-```js
-const contract = require("@0xcert/ethereum-zxc/build/contracts/ZXCToken.json");
-console.log(contract);
-```
-
-### Source
-
-```sol
-// TODO!!!
-```
-
-That's it. Let's compile the contract:
-
-```
-$ npm run compile
-```
-
-The easiest way to deploy it locally and start interacting with the contract (minting and transferring tokens) is to deploy it on your personal (local) blockchain using [Ganache](http://truffleframework.com/ganache/). Follow the steps in the Truffle documentation which are described [here](http://truffleframework.com/docs/getting_started/project#alternative-migrating-with-ganache).
 
 ## Contributing
 
