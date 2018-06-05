@@ -14,37 +14,37 @@ contract Zxc is Ownable {
   /**
    * Token name.
    */
-  string public name;
+  string internal tokenName;
 
   /**
    * Token symbol.
    */
-  string public symbol;
+  string internal tokenSymbol;
 
   /**
-   * Nubber of decimals.
+   * Number of decimals.
    */
-  uint8 public decimals;
+  uint8 internal tokenDecimals;
 
   /**
-   * Ballance information map.
+   * Total supply of tokens.
+   */
+  uint256 internal tokenTotalSupply;
+
+  /**
+   * Balance information map.
    */
   mapping (address => uint256) internal balances;
 
   /**
-   * Number of tokens in circulation.
-   */
-  uint256 internal currentSupply;
-
-  /**
-   * Allowance information map.
+   * Token allowance mapping.
    */
   mapping (address => mapping (address => uint256)) internal allowed;
 
   /**
    * Transfer feature state.
    */
-  bool public transferEnabled;
+  bool internal transferEnabled;
 
   /**
    * @dev An event which is triggered when funds are transfered.
@@ -94,26 +94,70 @@ contract Zxc is Ownable {
   constructor()
     public
   {
-    name = "0xcert Protocol Token";
-    symbol = "ZXC";
-    decimals = 18;
-    currentSupply = 400000000000000000000000000;
+    tokenName = "0xcert Protocol Token";
+    tokenSymbol = "ZXC";
+    tokenDecimals = 18;
+    tokenTotalSupply = 400000000000000000000000000;
     transferEnabled = false;
 
-    balances[owner] = currentSupply;
-    emit Transfer(address(0x0), owner, currentSupply);
+    balances[owner] = tokenTotalSupply;
+    emit Transfer(address(0x0), owner, tokenTotalSupply);
   }
 
   /**
-   * @dev Returns the total number of tokens in circulation. This function is based on BasicToken
-   * implementation at goo.gl/GZEhaq.
+   * @dev Returns the name of the token.
+   */
+  function name()
+    external
+    view
+    returns (string _name)
+  {
+    _name = tokenName;
+  }
+
+  /**
+   * @dev Returns the symbol of the token.
+   */
+  function symbol()
+    external
+    view
+    returns (string _symbol)
+  {
+    _symbol = tokenSymbol;
+  }
+
+  /**
+   * @dev Returns the number of decimals the token uses.
+   */
+  function decimals()
+    external
+    view
+    returns (uint8 _decimals)
+  {
+    _decimals = tokenDecimals;
+  }
+
+  /**
+   * @dev Returns the total token supply.
    */
   function totalSupply()
-    public
+    external
     view
-    returns (uint256)
+    returns (uint256 _totalSupply)
   {
-    return currentSupply;
+    _totalSupply = tokenTotalSupply;
+  }
+
+  /**
+   * @dev Returns the account balance of another account with address _owner.
+   * @param _owner The address from which the balance will be retrieved.
+   */
+  function balanceOf(address _owner)
+    external
+    view
+    returns (uint256 _balance)
+  {
+    _balance = balances[_owner];
   }
 
   /**
@@ -157,18 +201,6 @@ contract Zxc is Ownable {
 
     emit Transfer(_from, _to, _value);
     return true;
-  }
-
-  /**
-   * @dev Gets the balance of the specified address.
-   * @param _owner The address to query the the balance of.
-   */
-  function balanceOf(address _owner)
-    public
-    view
-    returns (uint256)
-  {
-    return balances[_owner];
   }
 
   /**
@@ -229,7 +261,7 @@ contract Zxc is Ownable {
     require(_value <= balances[msg.sender]);
 
     balances[owner] = balances[owner].sub(_value);
-    currentSupply = currentSupply.sub(_value);
+    tokenTotalSupply = tokenTotalSupply.sub(_value);
 
     emit Burn(owner, _value);
     emit Transfer(owner, address(0x0), _value);
