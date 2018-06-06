@@ -180,7 +180,7 @@ contract Zxc is Ownable {
   function transfer(address _to, uint256 _value)
     onlyWhenTransferAllowed()
     validDestination(_to)
-    public
+    external
     returns (bool)
   {
     require(_value <= balances[msg.sender]);
@@ -201,7 +201,7 @@ contract Zxc is Ownable {
   function transferFrom(address _from, address _to, uint256 _value)
     onlyWhenTransferAllowed()
     validDestination(_to)
-    public
+    external
     returns (bool)
   {
     require(_value <= balances[_from]);
@@ -268,7 +268,7 @@ contract Zxc is Ownable {
    */
   function burn(uint256 _value)
     onlyOwner()
-    public
+    external
   {
     require(_value <= balances[msg.sender]);
 
