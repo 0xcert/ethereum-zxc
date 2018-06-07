@@ -5,11 +5,14 @@ import "@0xcert/ethereum-utils/contracts/math/SafeMath.sol";
 import "@0xcert/ethereum-erc20/contracts/tokens/Token.sol";
 
 /*
- * @title ZXC  protocol token.
- * @dev Standard ERC20 token used by the protocol. This contract follows the
- * implementation at https://goo.gl/64yCkF.
+ * @title ZXC protocol token.
+ * @dev Standard ERC20 token used by the 0xcert protocol. This contract follows the implementation
+ * at https://goo.gl/64yCkF.
  */
-contract Zxc is Token, Ownable {
+contract Zxc is
+  Token,
+  Ownable
+{
   using SafeMath for uint256;
 
   /**
@@ -62,7 +65,7 @@ contract Zxc is Token, Ownable {
   }
 
   /**
-   * @dev transfer token for a specified address
+   * @dev Transfers token to a specified address.
    * @param _to The address to transfer to.
    * @param _value The amount to be transferred.
    */
@@ -72,15 +75,14 @@ contract Zxc is Token, Ownable {
     public
     returns (bool _success)
   {
-    super.transfer(_to, _value);
-    _success = true;
+    _success = super.transfer(_to, _value);
   }
 
   /**
-   * @dev Transfer tokens from one address to another.
+   * @dev Transfers tokens from one address to another.
    * @param _from address The address which you want to send tokens from.
    * @param _to address The address which you want to transfer to.
-   * @param _value uint256 the amount of tokens to be transferred.
+   * @param _value uint256 The amount of tokens to be transferred.
    */
   function transferFrom(address _from, address _to, uint256 _value)
     onlyWhenTransferAllowed()
@@ -88,8 +90,7 @@ contract Zxc is Token, Ownable {
     public
     returns (bool _success)
   {
-    super.transferFrom(_from, _to, _value);
-    _success = true;
+    _success = super.transferFrom(_from, _to, _value);
   }
 
   /**
@@ -103,9 +104,10 @@ contract Zxc is Token, Ownable {
   }
 
   /**
-   * @dev Burns a specific amount of tokens. Only owner is allowed to perform this operation. This
-   * function is based on BurnableToken implementation at goo.gl/GZEhaq.
-   * @param _value The amount of token to be burned.
+   * @dev Burns a specific amount of tokens. This function is based on BurnableToken implementation
+   * at goo.gl/GZEhaq.
+   * @notice Only owner is allowed to perform this operation.
+   * @param _value The amount of tokens to be burned.
    */
   function burn(uint256 _value)
     onlyOwner()
