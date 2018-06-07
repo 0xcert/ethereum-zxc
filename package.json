@@ -1,6 +1,6 @@
 {
   "name": "@0xcert/ethereum-zxc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "0xcert protocol token implementation for the Ethereum blockchain.",
   "main": "truffle.js",
   "directories": {
@@ -57,7 +57,7 @@
     "truffle-flattener": "^1.2.5"
   },
   "dependencies": {
-    "@0xcert/ethereum-utils": "1.0.0",
-    "@0xcert/ethereum-erc20": "1.2.0"
+    "@0xcert/ethereum-utils": "^1.0.0",
+    "@0xcert/ethereum-erc20": "^1.2.1"
   }
 }
