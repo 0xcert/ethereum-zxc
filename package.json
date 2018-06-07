@@ -58,6 +58,6 @@
   },
   "dependencies": {
     "@0xcert/ethereum-utils": "1.0.0",
-    "@0xcert/ethereum-erc20": "1.1.0"
+    "@0xcert/ethereum-erc20": "1.2.0"
   }
 }
