@@ -69,16 +69,11 @@ contract Zxc is Token, Ownable {
   function transfer(address _to, uint256 _value)
     onlyWhenTransferAllowed()
     validDestination(_to)
-    external
-    returns (bool)
+    public
+    returns (bool _success)
   {
-    require(_value <= balances[msg.sender]);
-
-    balances[msg.sender] = balances[msg.sender].sub(_value); // will fail on insufficient funds
-    balances[_to] = balances[_to].add(_value);
-
-    emit Transfer(msg.sender, _to, _value);
-    return true;
+    super.transfer(_to, _value);
+    _success = true;
   }
 
   /**
@@ -90,18 +85,11 @@ contract Zxc is Token, Ownable {
   function transferFrom(address _from, address _to, uint256 _value)
     onlyWhenTransferAllowed()
     validDestination(_to)
-    external
-    returns (bool)
+    public
+    returns (bool _success)
   {
-    require(_value <= balances[_from]);
-    require(_value <= allowed[_from][msg.sender]);
-
-    balances[_from] = balances[_from].sub(_value); // will fail on insufficient funds
-    balances[_to] = balances[_to].add(_value);
-    allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
-
-    emit Transfer(_from, _to, _value);
-    return true;
+    super.transferFrom(_from, _to, _value);
+    _success = true;
   }
 
   /**
