@@ -1,5 +1,5 @@
 const Zxc = artifacts.require('Zxc');
-const assertRevert = require('../../node_modules/@0xcert/ethereum-utils/test/helpers/assertRevert');
+const assertRevert = require('@0xcert/ethereum-utils/test/helpers/assertRevert');
 
 contract('erc/Zxc', (accounts) => {
   let token;
@@ -9,6 +9,9 @@ contract('erc/Zxc', (accounts) => {
   const tokenSymbol  = "ZXC";
   const tokenDecimals = "18";
   const ownerSupply = new web3.BigNumber('4e+26');
+
+  const decimalsMul = new web3.BigNumber('1e+18');
+  const tokenAmount = decimalsMul.mul(100);
 
   beforeEach(async () => {
     token = await Zxc.new();
@@ -22,7 +25,7 @@ contract('erc/Zxc', (accounts) => {
   });
 
   it('throws when trying to transfer before transfer is enabled', async () => {
-    await assertRevert(token.transfer(accounts[1], 100));
+    await assertRevert(token.transfer(accounts[1], tokenAmount));
   });
 
   it('throws when trying to transfer more than available balance', async () => {
@@ -33,50 +36,51 @@ contract('erc/Zxc', (accounts) => {
 
   it('throws when trying to transfer to 0x0', async () => {
     await token.enableTransfer();
-    await assertRevert(token.transfer(0x0, 100));
+    await assertRevert(token.transfer(0x0, tokenAmount));
   });
 
   it('throws when trying to transfer to contract address', async () => {
     await token.enableTransfer();
-    await assertRevert(token.transfer(token.address, 100));
+    await assertRevert(token.transfer(token.address, tokenAmount));
   });
 
   it('returns the correct allowance amount after approval', async () => {
-    await token.approve(accounts[1], 100);
+    await token.approve(accounts[1], tokenAmount);
     const allowance = await token.allowance(owner, accounts[1]);
-    assert.equal(allowance, 100);
+    assert.equal(allowance.toString(), tokenAmount.toString());
   });
 
   it('emits Approval event after approval', async () => {
-    const { logs } = await token.approve(accounts[1], 100);
+    const { logs } = await token.approve(accounts[1], tokenAmount);
     const event = logs.find(e => e.event === 'Approval');
     assert.notEqual(event, undefined);
   });
 
   it('returns correct balances after transfering from another account', async () => {
     await token.enableTransfer();
-    await token.approve(accounts[1], 100);
-    await token.transferFrom(owner, accounts[2], 100, { from: accounts[1] });
+    await token.approve(accounts[1], tokenAmount);
+    await token.transferFrom(owner, accounts[2], tokenAmount, { from: accounts[1] });
     const balance0 = await token.balanceOf(owner);
     const balance1 = await token.balanceOf(accounts[2]);
     const balance2 = await token.balanceOf(accounts[1]);
-    assert.equal(balance0.toString(), tokenTotalSupply.minus(100).toString());
-    assert.equal(balance1, 100);
+    assert.equal(balance0.toString(), tokenTotalSupply.minus(tokenAmount).toString());
+    assert.equal(balance1.toString(), tokenAmount.toString());
     assert.equal(balance2, 0);
   });
 
   it('emits Transfer event on transferFrom', async () => {
     await token.enableTransfer();
-    await token.approve(accounts[1], 100);
-    const { logs } = await token.transferFrom(owner, accounts[2], 100, { from: accounts[1] });
+    await token.approve(accounts[1], tokenAmount);
+    const { logs } = await token.transferFrom(owner, accounts[2], tokenAmount, { from: accounts[1] });
     const event = logs.find(e => e.event === 'Transfer');
     assert.notEqual(event, undefined);
   });
 
   it('throws when trying to transferFrom more than allowed amount', async () => {
+    const tokenAmountAllowed = decimalsMul.mul(99);
     await token.enableTransfer();
-    await token.approve(accounts[1], 99);
-    await assertRevert(token.transferFrom(owner, accounts[2], 100, { from: accounts[1] }));
+    await token.approve(accounts[1], tokenAmountAllowed);
+    await assertRevert(token.transferFrom(owner, accounts[2], tokenAmount, { from: accounts[1] }));
   });
 
   it('throws an error when trying to transferFrom more than _from has', async () => {
@@ -87,32 +91,33 @@ contract('erc/Zxc', (accounts) => {
   });
 
   it('throws when trying to transferFrom before transfers enabled', async () => {
-    await token.approve(accounts[1], 100);
-    await assertRevert(token.transferFrom(owner, accounts[2], 100, { from: accounts[1] }));
+    await token.approve(accounts[1], tokenAmount);
+    await assertRevert(token.transferFrom(owner, accounts[2], tokenAmount, { from: accounts[1] }));
   });
 
   it('throws when trying to transferFrom to 0x0', async () => {
     await token.enableTransfer();
-    await token.approve(accounts[1], 100);
-    await assertRevert(token.transferFrom(owner, 0x0, 100, { from: accounts[1] }));
+    await token.approve(accounts[1], tokenAmount);
+    await assertRevert(token.transferFrom(owner, 0x0, tokenAmount, { from: accounts[1] }));
   });
 
   it('throws when trying to transferFrom to contract address', async () => {
     await token.enableTransfer();
-    await token.approve(accounts[1], 100);
-    await assertRevert(token.transferFrom(owner, token.address, 100, { from: accounts[1] }));
+    await token.approve(accounts[1], tokenAmount);
+    await assertRevert(token.transferFrom(owner, token.address, tokenAmount, { from: accounts[1] }));
   });
 
   it('allows token burning by the owner', async () => {
+    const tokensToBurn = decimalsMul.mul(1);
     await token.enableTransfer();
     const totalSupplyPrior = await token.totalSupply();
-    const { logs } = await token.burn(1, {from: owner});
+    const { logs } = await token.burn(tokensToBurn, {from: owner});
 
     const totalSupplyAfter = await token.totalSupply();
     const balance = await token.balanceOf(owner);
-    assert.equal(balance.toString(), totalSupplyAfter);
+    assert.equal(balance.toString(), totalSupplyAfter.toString());
 
-    assert.equal(totalSupplyAfter.toString(), totalSupplyPrior.minus(1).toString());
+    assert.equal(totalSupplyAfter.toString(), totalSupplyPrior.minus(tokensToBurn).toString());
 
     const event = logs.find(e => e.event === 'Burn');
     assert.notEqual(event, undefined);
