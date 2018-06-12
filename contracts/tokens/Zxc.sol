@@ -7,7 +7,7 @@ import "@0xcert/ethereum-erc20/contracts/tokens/Token.sol";
 /*
  * @title ZXC protocol token.
  * @dev Standard ERC20 token used by the 0xcert protocol. This contract follows the implementation
- * at https://goo.gl/64yCkF.
+ * at https://goo.gl/twbPwp.
  */
 contract Zxc is
   Token,
