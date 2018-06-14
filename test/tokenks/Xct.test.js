@@ -44,6 +44,12 @@ contract('erc/Zxc', (accounts) => {
     await assertRevert(token.transfer(token.address, tokenAmount));
   });
 
+  it('throws when trying to transfer to crowdsale address', async () => {
+    await token.enableTransfer();
+    await token.setCrowdsaleAddress(accounts[3]);
+    await assertRevert(token.transfer(accounts[3], tokenAmount));
+  });
+
   it('returns the correct allowance amount after approval', async () => {
     await token.approve(accounts[1], tokenAmount);
     const allowance = await token.allowance(owner, accounts[1]);
@@ -129,6 +135,49 @@ contract('erc/Zxc', (accounts) => {
 
   it('does not allow owner to burn more than available balance', async () => {
     await assertRevert(token.burn(tokenTotalSupply.plus(1), { from: owner }));
+  });
+
+  it('should set crowdsale address', async () => {
+    await token.setCrowdsaleAddress(accounts[1]);
+    const actualCrowdsaleAddr = await token.crowdsaleAddress();
+    assert.equal(actualCrowdsaleAddr, accounts[1]);
+  });
+
+  it('should re-set crowdsale address', async () => {
+    await token.setCrowdsaleAddress(accounts[1]);
+    let actualCrowdsaleAddr = await token.crowdsaleAddress();
+    assert.equal(actualCrowdsaleAddr, accounts[1]);
+
+    await token.setCrowdsaleAddress(accounts[2]);
+    actualCrowdsaleAddr = await token.crowdsaleAddress();
+    assert.equal(actualCrowdsaleAddr, accounts[2]);
+  });
+
+  it('should set crowdsale address only if called by owner', async () => {
+    await assertRevert(token.setCrowdsaleAddress(accounts[2], {from: accounts[1]}));
+  });
+
+  it('should allow transfers only for crowdsale address when transfers disabled', async () => {
+    const approvedTokens = decimalsMul.mul(100);
+    await token.setCrowdsaleAddress(accounts[1]);
+    await token.approve(accounts[1], approvedTokens);
+    // Transfer 10 tokens from crowdsale to account2
+    await token.transferFrom(owner, accounts[2], decimalsMul.mul(10), {from: accounts[1]});
+    let accountBalance = await token.balanceOf(accounts[2]);
+    assert.strictEqual(accountBalance.toString(), decimalsMul.mul(10).toString());
+
+    // Transfer 5 tokens from account2 to account3 - should fail!
+    await assertRevert(token.transfer(accounts[3], decimalsMul.mul(5), {from: accounts[2]}));
+    // Transfer 5 tokens from owner to account3 - should fail!
+    await assertRevert(token.transfer(accounts[3], decimalsMul.mul(5), {from: owner}));
+
+    await token.enableTransfer();
+    // Transfer 5 tokens from account2 to account3 - should succeed!
+    await token.transfer(accounts[3], decimalsMul.mul(3), {from: accounts[2]});
+    // Transfer 5 tokens from account2 to account3 - should succeed!
+    await token.transfer(accounts[3], decimalsMul.mul(4), {from: owner});
+    accountBalance = await token.balanceOf(accounts[3]);
+    assert.strictEqual(accountBalance.toString(), decimalsMul.mul(7).toString());
   });
 
 });
