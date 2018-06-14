@@ -21,6 +21,11 @@ contract Zxc is
   bool internal transferEnabled;
 
   /**
+   * Crowdsale smart contract address.
+   */
+  address public crowdsaleAddress;
+
+  /**
    * @dev An event which is triggered when tokens are burned.
    * @param _burner The address which burns tokens.
    * @param _value The amount of burned tokens.
@@ -37,6 +42,7 @@ contract Zxc is
   modifier validDestination(address _to) {
     require(_to != address(0x0));
     require(_to != address(this));
+    require(_to != address(crowdsaleAddress));
     _;
   }
 
@@ -44,7 +50,7 @@ contract Zxc is
    * @dev Assures that tokens can be transfered.
    */
   modifier onlyWhenTransferAllowed() {
-    require(transferEnabled);
+    require(transferEnabled || msg.sender == crowdsaleAddress);
     _;
   }
 
@@ -120,6 +126,20 @@ contract Zxc is
 
     emit Burn(owner, _value);
     emit Transfer(owner, address(0x0), _value);
+  }
+
+  /**
+    * @dev Set crowdsale address which can distribute tokens even when onlyWhenTransferAllowed is
+    * false.
+    * @param crowdsaleAddr Address of token offering contract.
+    */
+  function setCrowdsaleAddress(
+    address crowdsaleAddr
+  )
+    external
+    onlyOwner()
+  {
+    crowdsaleAddress = crowdsaleAddr;
   }
 
 }
