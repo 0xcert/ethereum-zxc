@@ -39,7 +39,10 @@ contract Zxc is
    * @dev Assures that the provided address is a valid destination to transfer tokens to.
    * @param _to Target address.
    */
-  modifier validDestination(address _to) {
+  modifier validDestination(
+    address _to
+  )
+  {
     require(_to != address(0x0));
     require(_to != address(this));
     require(_to != address(crowdsaleAddress));
@@ -49,7 +52,8 @@ contract Zxc is
   /**
    * @dev Assures that tokens can be transfered.
    */
-  modifier onlyWhenTransferAllowed() {
+  modifier onlyWhenTransferAllowed()
+  {
     require(transferEnabled || msg.sender == crowdsaleAddress);
     _;
   }
@@ -75,7 +79,10 @@ contract Zxc is
    * @param _to The address to transfer to.
    * @param _value The amount to be transferred.
    */
-  function transfer(address _to, uint256 _value)
+  function transfer(
+    address _to,
+    uint256 _value
+  )
     onlyWhenTransferAllowed()
     validDestination(_to)
     public
@@ -90,7 +97,11 @@ contract Zxc is
    * @param _to address The address which you want to transfer to.
    * @param _value uint256 The amount of tokens to be transferred.
    */
-  function transferFrom(address _from, address _to, uint256 _value)
+  function transferFrom(
+    address _from,
+    address _to,
+    uint256 _value
+  )
     onlyWhenTransferAllowed()
     validDestination(_to)
     public
@@ -115,7 +126,9 @@ contract Zxc is
    * @notice Only owner is allowed to perform this operation.
    * @param _value The amount of tokens to be burned.
    */
-  function burn(uint256 _value)
+  function burn(
+    uint256 _value
+  )
     onlyOwner()
     external
   {
