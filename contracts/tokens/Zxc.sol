@@ -67,7 +67,7 @@ contract Zxc is
     tokenName = "0xcert Protocol Token";
     tokenSymbol = "ZXC";
     tokenDecimals = 18;
-    tokenTotalSupply = 400000000000000000000000000;
+    tokenTotalSupply = 500000000000000000000000000;
     transferEnabled = false;
 
     balances[owner] = tokenTotalSupply;
