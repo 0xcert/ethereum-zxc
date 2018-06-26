@@ -4,11 +4,11 @@ const assertRevert = require('@0xcert/ethereum-utils/test/helpers/assertRevert')
 contract('erc/Zxc', (accounts) => {
   let token;
   const owner = accounts[0];
-  const tokenTotalSupply = new web3.BigNumber('4e+26');
+  const tokenTotalSupply = new web3.BigNumber('5e+26');
   const tokenName = "0xcert Protocol Token";
   const tokenSymbol  = "ZXC";
   const tokenDecimals = "18";
-  const ownerSupply = new web3.BigNumber('4e+26');
+  const ownerSupply = new web3.BigNumber('5e+26');
 
   const decimalsMul = new web3.BigNumber('1e+18');
   const tokenAmount = decimalsMul.mul(100);
