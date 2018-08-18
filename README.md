@@ -1,6 +1,6 @@
 <img src="https://github.com/0xcert/ethereum-zxc/raw/master/assets/cover.png" />
 
-![Build Status](https://travis-ci.org/0xcert/ethereum-zxc.svg?branch=master)&nbsp;[![NPM Version](https://badge.fury.io/js/@0xcert%2Fethereum-zxc.svg)](https://badge.fury.io/js/0xcert%2Fethereum-zxc)&nbsp;[![Dependencies Status](https://david-dm.org/0xcert/ethereum-zxc.svg)](https://david-dm.org/0xcert/ethereum-zxc)&nbsp;[![Bug Bounty](https://img.shields.io/badge/bounty-pending-2930e8.svg)](https://github.com/0xcert/ethereum-zxc/issues)
+![Build Status](https://travis-ci.org/0xcert/ethereum-zxc.svg?branch=master)&nbsp;[![NPM Version](https://badge.fury.io/js/@0xcert%2Fethereum-zxc.svg)](https://badge.fury.io/js/0xcert%2Fethereum-zxc)&nbsp;[![Dependencies Status](https://david-dm.org/0xcert/ethereum-zxc.svg)](https://david-dm.org/0xcert/ethereum-zxc)&nbsp;[![Bug Bounty](https://img.shields.io/badge/bounty-pending-2930e8.svg)](https://github.com/0xcert/ethereum-zxc/issues) [![Greenkeeper badge](https://badges.greenkeeper.io/0xcert/ethereum-zxc.svg)](https://greenkeeper.io/)
 
 > 0xcert protocol token implementation for the Ethereum blockchain.
 
